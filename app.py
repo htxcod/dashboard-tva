@@ -14,6 +14,9 @@ import pandas as pd
 import plotly.express as px  # noqa: F401 — servira aux étapes 2 et 4, ne pas supprimer
 import streamlit as st
 
+
+
+
 st.set_page_config(page_title="Référentiel TVA", layout="wide")
 
 
@@ -78,7 +81,20 @@ selection = selection[selection["date_saisie"].dt.date.between(debut, fin)]
 # =============================================================================
 st.title("Qualité du référentiel TVA")
 # TODO AIDE (étape 6a) : une phrase d'aide pour la directrice financière (st.write).
+st.write(
+    "Utilisez les filtres latéraux pour cibler les pays, les canaux de saisie et la période, "
+    "puis vérifiez les erreurs et les numéros à traiter avant la prochaine facture."
+)
+
 # TODO DATE_REGLE (étape 6b) : la date de la dernière vérification VIES et la règle pour les non tranchés (st.info).
+if selection["date_verification"].notna().any():
+    derniere_verification = selection["date_verification"].max().date()
+    st.info(
+        f"Dernière vérification VIES : {derniere_verification.strftime('%d/%m/%Y')}. "
+        "Les numéros non tranchés doivent être revérifiés sur VIES avant la prochaine facture."
+    )
+else:
+    st.info("Aucune vérification VIES disponible pour la sélection. Les numéros non tranchés doivent être revérifiés sur VIES avant la prochaine facture.")
 
 # =============================================================================
 # ÉTAPE 1 — Les quatre chiffres clés
